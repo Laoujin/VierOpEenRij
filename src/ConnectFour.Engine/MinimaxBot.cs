@@ -20,9 +20,10 @@ public sealed class MinimaxBot : IBot
             throw new InvalidOperationException("Game is not in progress.");
 
         var perspective = game.CurrentPlayer;
-        int bestScore = int.MinValue;
+        long bestScore = long.MinValue;
         var bestColumns = new List<int>();
         int alpha = -WinScore - 1;
+        int centerCol = game.Board.Columns / 2;
 
         for (int col = 0; col < game.Board.Columns; col++)
         {
@@ -31,21 +32,24 @@ public sealed class MinimaxBot : IBot
             var simBoard = game.Board.PlaceDisc(col, perspective, out var landing);
             var winLine = WinDetection.FindWinningLine(simBoard, landing, perspective);
 
-            int score;
+            int rawScore;
             if (winLine.Count > 0)
             {
-                score = WinScore;
+                rawScore = WinScore;
             }
             else if (simBoard.IsFull)
             {
-                score = 0;
+                rawScore = 0;
             }
             else
             {
                 // perspective just moved; opponent moves next — return value from perspective's view
-                score = Minimax(simBoard, perspective.Opponent(), perspective, _depth - 1,
+                rawScore = Minimax(simBoard, perspective.Opponent(), perspective, _depth - 1,
                     alpha, WinScore + 1);
             }
+
+            // Tiebreak: prefer columns closer to center; scaled so it never overrides a real score difference
+            long score = (long)rawScore * 10 + (centerCol - Math.Abs(col - centerCol));
 
             if (score > bestScore)
             {
@@ -58,7 +62,7 @@ public sealed class MinimaxBot : IBot
                 bestColumns.Add(col);
             }
 
-            if (bestScore > alpha) alpha = bestScore;
+            if (rawScore > alpha) alpha = rawScore;
         }
 
         if (bestColumns.Count == 0)
@@ -132,8 +136,8 @@ public sealed class MinimaxBot : IBot
         int centerCol = board.Columns / 2;
         for (int r = 0; r < board.Rows; r++)
         {
-            if (board[r, centerCol] == us) score += 3;
-            else if (board[r, centerCol] == them) score -= 3;
+            if (board[r, centerCol] == us) score += 8;
+            else if (board[r, centerCol] == them) score -= 8;
         }
         return score;
     }

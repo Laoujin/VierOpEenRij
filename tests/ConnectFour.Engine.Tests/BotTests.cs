@@ -38,4 +38,13 @@ public class BotTests
 
         bot.ChooseColumn(game).Should().Be(3);
     }
+
+    [Fact]
+    public void Bot_prefers_center_column_on_empty_board()
+    {
+        var game = new Game();
+        var bot = new MinimaxBot(depth: 5, rng: new Random(0));
+
+        bot.ChooseColumn(game).Should().Be(3);
+    }
 }
