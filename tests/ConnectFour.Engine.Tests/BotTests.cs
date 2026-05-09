@@ -98,4 +98,27 @@ public class BotTests
 
         sw.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(1));
     }
+
+    [Fact]
+    public void Bot_tie_break_varies_across_unseeded_runs()
+    {
+        // Symmetric position with center full: cols 2 and 4 tie at equal heuristic distance.
+        // Different RNG seeds must therefore produce different picks.
+        var picks = new HashSet<int>();
+        for (int i = 0; i < 50; i++)
+        {
+            var game = BoardBuilder.FromArt(@"
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . B . . .
+            ", nextToMove: Player.Blue);
+            var bot = new MinimaxBot(depth: 1, rng: new Random(i));
+            picks.Add(bot.ChooseColumn(game));
+        }
+
+        picks.Count.Should().BeGreaterThan(1, "tie-break should produce different columns under different seeds");
+    }
 }
