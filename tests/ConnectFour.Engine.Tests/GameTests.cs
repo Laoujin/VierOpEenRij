@@ -1,3 +1,4 @@
+using System.Reflection;
 using FluentAssertions;
 using Xunit;
 
@@ -162,5 +163,27 @@ public class GameTests
             new Position(4, 2),
             new Position(5, 3),
         });
+    }
+
+    [Fact]
+    public void Filled_board_with_no_four_is_a_draw()
+    {
+        var game = BoardBuilder.FromArt(@"
+            R B B R R B B
+            B R R B B R R
+            R B B R R B B
+            B R R B B R R
+            R B B R R B B
+            B R R B B R R
+        ", nextToMove: Player.Blue);
+
+        game.Board.IsFull.Should().BeTrue();
+
+        typeof(Game).GetMethod("RecomputeTerminalStatus", BindingFlags.NonPublic | BindingFlags.Instance)
+            !.Invoke(game, null);
+
+        game.Status.Should().Be(GameStatus.Draw);
+        game.Winner.Should().BeNull();
+        game.WinningLine.Should().BeEmpty();
     }
 }
