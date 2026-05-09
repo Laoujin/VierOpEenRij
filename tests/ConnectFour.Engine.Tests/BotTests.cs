@@ -67,4 +67,22 @@ public class BotTests
         pick.Should().Be(3);
         game.Board.IsColumnFull(pick).Should().BeFalse();
     }
+
+    [Fact]
+    public void Bot_with_same_seed_returns_same_move()
+    {
+        var game = BoardBuilder.FromArt(@"
+            . . . . . . .
+            . . . . . . .
+            . . . . . . .
+            . . . . . . .
+            . . . . B . .
+            . . R B R . .
+        ", nextToMove: Player.Blue);
+
+        var bot1 = new MinimaxBot(depth: 5, rng: new Random(123));
+        var bot2 = new MinimaxBot(depth: 5, rng: new Random(123));
+
+        bot1.ChooseColumn(game).Should().Be(bot2.ChooseColumn(game));
+    }
 }
