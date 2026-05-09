@@ -62,4 +62,19 @@ public class GameTests
         result.Should().BeNull();
         game.Status.Should().Be(GameStatus.InProgress);
     }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(7)]
+    [InlineData(99)]
+    public void TryPlay_returns_false_for_out_of_range_column(int column)
+    {
+        var game = new Game();
+
+        var ok = game.TryPlay(column, out var result);
+
+        ok.Should().BeFalse();
+        result.Should().BeNull();
+        game.CurrentPlayer.Should().Be(Player.Blue);
+    }
 }
