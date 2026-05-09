@@ -111,4 +111,56 @@ public class GameTests
             new Position(5, 3),
         });
     }
+
+    [Fact]
+    public void DiagonalUp_four_in_a_row_wins()
+    {
+        var game = BoardBuilder.FromArt(@"
+            . . . . . . .
+            . . . . . . .
+            . . . . . . .
+            . . B R . . .
+            . B R R . . .
+            B R R R . . .
+        ", nextToMove: Player.Blue);
+
+        var ok = game.TryPlay(3, out var result);
+
+        ok.Should().BeTrue();
+        game.Status.Should().Be(GameStatus.Won);
+        game.Winner.Should().Be(Player.Blue);
+        game.WinningLine.Should().BeEquivalentTo(new[]
+        {
+            new Position(5, 0),
+            new Position(4, 1),
+            new Position(3, 2),
+            new Position(2, 3),
+        });
+    }
+
+    [Fact]
+    public void DiagonalDown_four_in_a_row_wins()
+    {
+        var game = BoardBuilder.FromArt(@"
+            . . . . . . .
+            . . . . . . .
+            B . . . . . .
+            R B . . . . .
+            R R B . . . .
+            R R R . . . .
+        ", nextToMove: Player.Blue);
+
+        var ok = game.TryPlay(3, out var result);
+
+        ok.Should().BeTrue();
+        game.Status.Should().Be(GameStatus.Won);
+        game.Winner.Should().Be(Player.Blue);
+        game.WinningLine.Should().BeEquivalentTo(new[]
+        {
+            new Position(2, 0),
+            new Position(3, 1),
+            new Position(4, 2),
+            new Position(5, 3),
+        });
+    }
 }
