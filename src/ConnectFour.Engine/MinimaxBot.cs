@@ -22,6 +22,7 @@ public sealed class MinimaxBot : IBot
         var perspective = game.CurrentPlayer;
         int bestScore = int.MinValue;
         var bestColumns = new List<int>();
+        int alpha = -WinScore - 1;
 
         for (int col = 0; col < game.Board.Columns; col++)
         {
@@ -41,8 +42,9 @@ public sealed class MinimaxBot : IBot
             }
             else
             {
-                score = -Negamax(simBoard, perspective.Opponent(), perspective, _depth - 1,
-                    -WinScore - 1, WinScore + 1);
+                // perspective just moved; opponent moves next — return value from perspective's view
+                score = Minimax(simBoard, perspective.Opponent(), perspective, _depth - 1,
+                    alpha, WinScore + 1);
             }
 
             if (score > bestScore)
@@ -55,6 +57,8 @@ public sealed class MinimaxBot : IBot
             {
                 bestColumns.Add(col);
             }
+
+            if (bestScore > alpha) alpha = bestScore;
         }
 
         if (bestColumns.Count == 0)
@@ -65,12 +69,15 @@ public sealed class MinimaxBot : IBot
             : bestColumns[_rng.Next(bestColumns.Count)];
     }
 
-    private static int Negamax(Board board, Player toMove, Player perspective, int depth, int alpha, int beta)
+    // Returns score from `perspective`'s point of view.
+    // `toMove` is whose turn it is in this sub-tree.
+    private static int Minimax(Board board, Player toMove, Player perspective, int depth, int alpha, int beta)
     {
         if (depth == 0)
             return Evaluate(board, perspective);
 
-        int best = int.MinValue;
+        bool maximizing = toMove == perspective;
+        int best = maximizing ? int.MinValue : int.MaxValue;
         bool anyMove = false;
 
         for (int col = 0; col < board.Columns; col++)
@@ -84,7 +91,10 @@ public sealed class MinimaxBot : IBot
             int value;
             if (winLine.Count > 0)
             {
-                value = (toMove == perspective) ? WinScore - (10 - depth) : -(WinScore - (10 - depth));
+                // toMove just won; score relative to perspective
+                value = (toMove == perspective)
+                    ? WinScore - (10 - depth)
+                    : -(WinScore - (10 - depth));
             }
             else if (newBoard.IsFull)
             {
@@ -92,19 +102,17 @@ public sealed class MinimaxBot : IBot
             }
             else
             {
-                value = (toMove == perspective)
-                    ? Negamax(newBoard, toMove.Opponent(), perspective, depth - 1, alpha, beta)
-                    : Negamax(newBoard, toMove.Opponent(), perspective, depth - 1, alpha, beta);
+                value = Minimax(newBoard, toMove.Opponent(), perspective, depth - 1, alpha, beta);
             }
 
-            if (toMove == perspective)
+            if (maximizing)
             {
                 if (value > best) best = value;
                 if (best > alpha) alpha = best;
             }
             else
             {
-                if (best == int.MinValue || value < best) best = value;
+                if (value < best) best = value;
                 if (best < beta) beta = best;
             }
 
