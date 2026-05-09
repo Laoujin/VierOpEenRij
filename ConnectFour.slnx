@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/ConnectFour.Engine/ConnectFour.Engine.csproj" />
+  <Project Path="tests/ConnectFour.Engine.Tests/ConnectFour.Engine.Tests.csproj" />
+</Solution>

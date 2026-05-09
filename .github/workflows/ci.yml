@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: [modernize]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - run: dotnet restore ConnectFour.slnx
+      - name: Verify formatting
+        run: dotnet format ConnectFour.slnx --verify-no-changes --severity warn
+      - run: dotnet build ConnectFour.slnx --configuration Release --no-restore /warnaserror
+      - name: Test with coverage
+        run: >
+          dotnet test ConnectFour.slnx --configuration Release --no-build
+          --logger "trx;LogFileName=results.trx"
+          --collect:"XPlat Code Coverage"
+          --settings coverlet.runsettings
+          --results-directory TestResults
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-results
+          path: TestResults/**/*
+      - name: Coverage summary
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: TestResults/**/coverage.cobertura.xml
+          format: markdown
+          output: both
+          badge: true
+          thresholds: '90 95'
+          fail_below_min: true
+      - name: Post coverage comment
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          recreate: true
+          path: code-coverage-results.md
