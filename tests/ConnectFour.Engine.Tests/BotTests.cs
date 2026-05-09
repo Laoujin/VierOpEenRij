@@ -47,4 +47,24 @@ public class BotTests
 
         bot.ChooseColumn(game).Should().Be(3);
     }
+
+    [Fact]
+    public void Bot_never_returns_invalid_column()
+    {
+        var game = BoardBuilder.FromArt(@"
+            R B R . R B R
+            B R B R B R B
+            R B R B R B R
+            B R B R B R B
+            R B R B R B R
+            B R B R B R B
+        ", nextToMove: Player.Blue);
+
+        var bot = new MinimaxBot(depth: 3, rng: new Random(0));
+
+        var pick = bot.ChooseColumn(game);
+
+        pick.Should().Be(3);
+        game.Board.IsColumnFull(pick).Should().BeFalse();
+    }
 }
