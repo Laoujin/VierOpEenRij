@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using ConnectFour.Desktop.ViewModels;
@@ -18,5 +19,17 @@ public partial class BoardView : UserControl
     {
         if (sender is Button { Tag: int column } && DataContext is GameViewModel vm)
             vm.PlayColumnCommand.Execute(column);
+    }
+
+    private void OnColumnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is int col && DataContext is GameViewModel vm)
+            vm.HoverColumn(col);
+    }
+
+    private void OnColumnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (DataContext is GameViewModel vm)
+            vm.HoverColumn(null);
     }
 }

@@ -1,3 +1,4 @@
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConnectFour.Engine;
 
@@ -16,6 +17,12 @@ public sealed partial class CellViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isLandingPreview;
+
+    [ObservableProperty]
+    private bool _isDropping;
+
+    [ObservableProperty]
+    private IBrush? _previewBrush;
 
     public CellViewModel(int row, int column)
     {
