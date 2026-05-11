@@ -1,6 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ConnectFour.Desktop.Converters;
 using ConnectFour.Desktop.Models;
 using ConnectFour.Engine;
 
@@ -89,10 +92,13 @@ public sealed partial class GameViewModel : ViewModelBase
             _ = PlayBotMoveAsync();
     }
 
-    private void OnMovePlayed(MoveResult result)
+    private async void OnMovePlayed(MoveResult result)
     {
         var cell = Cells.First(c => c.Row == result.Landing.Row && c.Column == result.Landing.Column);
+        cell.IsDropping = true;
         cell.State = result.Board[result.Landing.Row, result.Landing.Column];
+        await Task.Delay(50);
+        cell.IsDropping = false;
 
         StatusText = result.Status switch
         {
@@ -111,6 +117,27 @@ public sealed partial class GameViewModel : ViewModelBase
         }
 
         PlayColumnCommand.NotifyCanExecuteChanged();
+    }
+
+    public void HoverColumn(int? column)
+    {
+        foreach (var cell in Cells) cell.IsLandingPreview = false;
+        if (column is null) return;
+        if (_game.Status != GameStatus.InProgress) return;
+        if (column < 0 || column >= _game.Board.Columns) return;
+        if (_game.Board.IsColumnFull(column.Value)) return;
+
+        int landRow = _game.Board.Rows - 1;
+        while (landRow >= 0 && _game.Board[landRow, column.Value] != CellState.Empty)
+            landRow--;
+        if (landRow < 0) return;
+
+        var hoverCell = Cells.First(c => c.Row == landRow && c.Column == column);
+        var brush = (IBrush)CellStateToBrushConverter.Instance.Convert(
+            _game.CurrentPlayer.ToCellState(), typeof(IBrush), null!,
+            CultureInfo.InvariantCulture)!;
+        hoverCell.PreviewBrush = brush;
+        hoverCell.IsLandingPreview = true;
     }
 
     partial void OnModeChanged(GameMode value) => NewGame();
