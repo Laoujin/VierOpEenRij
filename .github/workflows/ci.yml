@@ -30,17 +30,11 @@ jobs:
           name: test-results
           path: TestResults/**/*
       - name: Coverage summary
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: TestResults/**/coverage.cobertura.xml
-          format: markdown
-          output: both
-          badge: true
-          thresholds: '90 95'
-          fail_below_min: true
-      - name: Post coverage comment
-        if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v3
-        with:
-          recreate: true
-          path: code-coverage-results.md
+        shell: pwsh
+        run: |
+          $file = Get-ChildItem -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
+          if (-not $file) { Write-Error "No coverage file found"; exit 1 }
+          [xml]$cov = Get-Content $file.FullName
+          $rate = [double]$cov.coverage.'line-rate' * 100
+          Write-Host ("Line coverage: {0:F1}%" -f $rate)
+          if ($rate -lt 90) { Write-Error "Coverage {0:F1}% is below the 90% threshold" -f $rate; exit 1 }
