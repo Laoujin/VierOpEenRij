@@ -225,4 +225,22 @@ public class GameTests
         ok.Should().BeFalse();
         result.Should().BeNull();
     }
+
+    [Fact]
+    public void Reset_returns_game_to_fresh_state()
+    {
+        var game = new Game();
+        game.PlayMoves(0, 0, 1, 1, 2, 2, 3);
+        game.Status.Should().Be(GameStatus.Won);
+
+        game.Reset();
+
+        game.Status.Should().Be(GameStatus.InProgress);
+        game.Winner.Should().BeNull();
+        game.WinningLine.Should().BeEmpty();
+        game.CurrentPlayer.Should().Be(Player.Blue);
+        for (int r = 0; r < game.Board.Rows; r++)
+            for (int c = 0; c < game.Board.Columns; c++)
+                game.Board[r, c].Should().Be(CellState.Empty);
+    }
 }
