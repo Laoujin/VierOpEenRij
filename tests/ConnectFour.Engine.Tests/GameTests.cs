@@ -95,4 +95,22 @@ public class GameTests
             new Position(5, 3),
         });
     }
+
+    [Fact]
+    public void Vertical_four_in_a_row_wins()
+    {
+        var game = new Game();
+        // Blue plays col 3 four times, Red plays col 0 thrice in between
+        game.PlayMoves(3, 0, 3, 0, 3, 0, 3);
+
+        game.Status.Should().Be(GameStatus.Won);
+        game.Winner.Should().Be(Player.Blue);
+        game.WinningLine.Should().BeEquivalentTo(new[]
+        {
+            new Position(2, 3),
+            new Position(3, 3),
+            new Position(4, 3),
+            new Position(5, 3),
+        });
+    }
 }
