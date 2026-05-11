@@ -8,6 +8,6 @@ public class SmokeTests
     [Fact]
     public void Engine_assembly_is_referenced()
     {
-        Placeholder.Marker.Should().Be("engine-scaffold");
+        new Game().Board.Rows.Should().Be(6);
     }
 }
