@@ -49,4 +49,17 @@ public class GameTests
         game.Board[2, 3].Should().Be(CellState.Empty);
         game.CurrentPlayer.Should().Be(Player.Red);
     }
+
+    [Fact]
+    public void TryPlay_returns_false_when_column_is_full()
+    {
+        var game = new Game();
+        game.PlayMoves(0, 0, 0, 0, 0, 0);   // 6 discs filling column 0
+
+        var ok = game.TryPlay(0, out var result);
+
+        ok.Should().BeFalse();
+        result.Should().BeNull();
+        game.Status.Should().Be(GameStatus.InProgress);
+    }
 }
