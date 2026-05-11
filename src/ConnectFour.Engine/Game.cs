@@ -74,4 +74,15 @@ public sealed class Game
         _winner = null;
         _winningLine = Array.Empty<Position>();
     }
+
+    internal void RecomputeTerminalStatus()
+    {
+        if (_status != GameStatus.InProgress) return;
+        if (_board.IsFull)
+        {
+            _status = GameStatus.Draw;
+            _winner = null;
+            _winningLine = Array.Empty<Position>();
+        }
+    }
 }
