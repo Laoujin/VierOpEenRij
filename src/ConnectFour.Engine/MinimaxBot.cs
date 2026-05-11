@@ -41,7 +41,7 @@ public sealed class MinimaxBot : IBot
             }
             else
             {
-                score = -Negamax(simBoard, perspective.Opponent(), perspective, _depth - 1,
+                score = Negamax(simBoard, perspective.Opponent(), perspective, _depth - 1,
                     -WinScore - 1, WinScore + 1);
             }
 
