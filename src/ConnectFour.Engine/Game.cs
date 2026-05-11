@@ -23,12 +23,55 @@ public sealed class Game
     public Player? Winner => _winner;
     public IReadOnlyList<Position> WinningLine => _winningLine;
 
-#pragma warning disable CS0067 // Event not used in skeleton; wired up in full implementation
     public event Action<MoveResult>? MovePlayed;
-#pragma warning restore CS0067
 
-    public bool TryPlay(int column, out MoveResult result) =>
-        throw new NotImplementedException();
+    public bool TryPlay(int column, out MoveResult result)
+    {
+        result = default!;
+        if (_status != GameStatus.InProgress) return false;
+        if (column < 0 || column >= _board.Columns) return false;
+        if (_board.IsColumnFull(column)) return false;
 
-    public void Reset() => throw new NotImplementedException();
+        var movingPlayer = _currentPlayer;
+        var newBoard = _board.PlaceDisc(column, movingPlayer, out var landing);
+        var winningLine = WinDetection.FindWinningLine(newBoard, landing, movingPlayer);
+
+        GameStatus newStatus;
+        Player? newWinner;
+        if (winningLine.Count > 0)
+        {
+            newStatus = GameStatus.Won;
+            newWinner = movingPlayer;
+        }
+        else if (newBoard.IsFull)
+        {
+            newStatus = GameStatus.Draw;
+            newWinner = null;
+        }
+        else
+        {
+            newStatus = GameStatus.InProgress;
+            newWinner = null;
+        }
+
+        _board = newBoard;
+        _status = newStatus;
+        _winner = newWinner;
+        _winningLine = winningLine;
+        if (newStatus == GameStatus.InProgress)
+            _currentPlayer = movingPlayer.Opponent();
+
+        result = new MoveResult(newBoard, landing, newStatus, newWinner, winningLine);
+        MovePlayed?.Invoke(result);
+        return true;
+    }
+
+    public void Reset()
+    {
+        _board = new Board(_board.Rows, _board.Columns);
+        _currentPlayer = Player.Blue;
+        _status = GameStatus.InProgress;
+        _winner = null;
+        _winningLine = Array.Empty<Position>();
+    }
 }

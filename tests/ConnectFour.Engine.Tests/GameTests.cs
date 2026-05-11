@@ -21,4 +21,18 @@ public class GameTests
             for (int c = 0; c < game.Board.Columns; c++)
                 game.Board[r, c].Should().Be(CellState.Empty);
     }
+
+    [Fact]
+    public void TryPlay_lands_disc_in_bottom_row_of_empty_column()
+    {
+        var game = new Game();
+
+        var ok = game.TryPlay(3, out var result);
+
+        ok.Should().BeTrue();
+        result.Landing.Should().Be(new Position(5, 3));
+        result.Status.Should().Be(GameStatus.InProgress);
+        game.Board[5, 3].Should().Be(CellState.Blue);
+        game.CurrentPlayer.Should().Be(Player.Red);
+    }
 }
