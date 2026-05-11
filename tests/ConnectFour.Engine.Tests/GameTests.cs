@@ -35,4 +35,18 @@ public class GameTests
         game.Board[5, 3].Should().Be(CellState.Blue);
         game.CurrentPlayer.Should().Be(Player.Red);
     }
+
+    [Fact]
+    public void Stacked_discs_land_on_top_of_each_other()
+    {
+        var game = new Game();
+
+        game.PlayMoves(3, 3, 3);   // blue, red, blue all in column 3
+
+        game.Board[5, 3].Should().Be(CellState.Blue);
+        game.Board[4, 3].Should().Be(CellState.Red);
+        game.Board[3, 3].Should().Be(CellState.Blue);
+        game.Board[2, 3].Should().Be(CellState.Empty);
+        game.CurrentPlayer.Should().Be(Player.Red);
+    }
 }
