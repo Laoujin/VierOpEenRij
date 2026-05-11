@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ConnectFour.Desktop</RootNamespace>
+    <AssemblyName>ConnectFour.Desktop</AssemblyName>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <!-- IDE0005 requires GenerateDocumentationFile; suppress instead of enabling XML docs on a WinExe -->
+    <NoWarn>$(NoWarn);IDE0005</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <!-- Override transitive vulnerable version of Tmds.DBus.Protocol -->
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.93.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConnectFour.Engine\ConnectFour.Engine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Styles\**" />
+  </ItemGroup>
+</Project>
