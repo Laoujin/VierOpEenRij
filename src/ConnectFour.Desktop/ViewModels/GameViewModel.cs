@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ConnectFour.Desktop.Converters;
 using ConnectFour.Desktop.Models;
+using ConnectFour.Desktop.Services;
 using ConnectFour.Engine;
 
 namespace ConnectFour.Desktop.ViewModels;
@@ -13,6 +14,7 @@ public sealed partial class GameViewModel : ViewModelBase
 {
     private readonly Game _game;
     private readonly IBot _bot;
+    private readonly ISoundService _sound;
 
     public ObservableCollection<CellViewModel> Cells { get; }
     public IReadOnlyList<int> ColumnHandles { get; }
@@ -28,10 +30,11 @@ public sealed partial class GameViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isThinking;
 
-    public GameViewModel(IBot? bot = null)
+    public GameViewModel(IBot? bot = null, ISoundService? sound = null)
     {
         _game = new Game();
         _bot = bot ?? new MinimaxBot();
+        _sound = sound ?? new NoOpSoundService();
         Cells = new ObservableCollection<CellViewModel>();
         for (int r = 0; r < _game.Board.Rows; r++)
             for (int c = 0; c < _game.Board.Columns; c++)
@@ -97,6 +100,7 @@ public sealed partial class GameViewModel : ViewModelBase
         var cell = Cells.First(c => c.Row == result.Landing.Row && c.Column == result.Landing.Column);
         cell.IsDropping = true;
         cell.State = result.Board[result.Landing.Row, result.Landing.Column];
+        _sound.PlayDrop();
         await Task.Delay(50);
         cell.IsDropping = false;
 
@@ -109,6 +113,7 @@ public sealed partial class GameViewModel : ViewModelBase
 
         if (result.Status == GameStatus.Won)
         {
+            _sound.PlayWin();
             foreach (var pos in result.WinningLine)
             {
                 var winCell = Cells.First(c => c.Row == pos.Row && c.Column == pos.Column);
