@@ -77,4 +77,22 @@ public class GameTests
         result.Should().BeNull();
         game.CurrentPlayer.Should().Be(Player.Blue);
     }
+
+    [Fact]
+    public void Horizontal_four_in_a_row_wins()
+    {
+        var game = new Game();
+        // Blue plays cols 0,1,2,3 ; Red fills row above-but-not-decisive
+        game.PlayMoves(0, 0, 1, 1, 2, 2, 3);
+
+        game.Status.Should().Be(GameStatus.Won);
+        game.Winner.Should().Be(Player.Blue);
+        game.WinningLine.Should().BeEquivalentTo(new[]
+        {
+            new Position(5, 0),
+            new Position(5, 1),
+            new Position(5, 2),
+            new Position(5, 3),
+        });
+    }
 }
