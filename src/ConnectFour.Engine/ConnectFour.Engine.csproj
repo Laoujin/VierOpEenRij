@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>ConnectFour.Engine</RootNamespace>
+    <AssemblyName>ConnectFour.Engine</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="ConnectFour.Engine.Tests" />
+  </ItemGroup>
+</Project>
