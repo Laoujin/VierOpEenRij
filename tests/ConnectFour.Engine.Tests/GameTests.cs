@@ -191,4 +191,38 @@ public class GameTests
         game.Winner.Should().BeNull();
         game.WinningLine.Should().BeEmpty();
     }
+
+    [Fact]
+    public void TryPlay_returns_false_after_game_is_won()
+    {
+        var game = new Game();
+        game.PlayMoves(0, 0, 1, 1, 2, 2, 3);   // Blue wins horizontally on row 5
+        game.Status.Should().Be(GameStatus.Won);
+
+        var ok = game.TryPlay(4, out var result);
+
+        ok.Should().BeFalse();
+        result.Should().BeNull();
+        game.Status.Should().Be(GameStatus.Won);
+    }
+
+    [Fact]
+    public void TryPlay_returns_false_after_game_is_drawn()
+    {
+        var game = BoardBuilder.FromArt(@"
+            R B B R R B B
+            B R R B B R R
+            R B B R R B B
+            B R R B B R R
+            R B B R R B B
+            B R R B B R R
+        ", nextToMove: Player.Blue);
+        typeof(Game).GetMethod("RecomputeTerminalStatus", BindingFlags.NonPublic | BindingFlags.Instance)
+            !.Invoke(game, null);
+
+        var ok = game.TryPlay(0, out var result);
+
+        ok.Should().BeFalse();
+        result.Should().BeNull();
+    }
 }
