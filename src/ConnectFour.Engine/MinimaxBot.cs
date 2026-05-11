@@ -129,8 +129,8 @@ public sealed class MinimaxBot : IBot
         int centerCol = board.Columns / 2;
         for (int r = 0; r < board.Rows; r++)
         {
-            if (board[r, centerCol] == us) score += 3;
-            else if (board[r, centerCol] == them) score -= 3;
+            if (board[r, centerCol] == us) score += 5;
+            else if (board[r, centerCol] == them) score -= 5;
         }
         return score;
     }
