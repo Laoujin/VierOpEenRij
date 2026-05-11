@@ -2,6 +2,7 @@
   <PropertyGroup>
     <RootNamespace>ConnectFour.Engine</RootNamespace>
     <AssemblyName>ConnectFour.Engine</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="ConnectFour.Engine.Tests" />
