@@ -96,9 +96,9 @@ public sealed partial class GameViewModel : ViewModelBase
 
         StatusText = result.Status switch
         {
-            GameStatus.Won  => $"{result.Winner} wins!",
+            GameStatus.Won => $"{result.Winner} wins!",
             GameStatus.Draw => "Draw.",
-            _               => $"{_game.CurrentPlayer} to move"
+            _ => $"{_game.CurrentPlayer} to move"
         };
 
         if (result.Status == GameStatus.Won)
