@@ -86,4 +86,17 @@ public class BotTests
 
         bot1.ChooseColumn(game).Should().Be(bot2.ChooseColumn(game));
     }
+
+    [Fact]
+    public void Bot_returns_within_one_second_at_depth_five()
+    {
+        var game = new Game();
+        var bot = new MinimaxBot(depth: 5, rng: new Random(0));
+
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        bot.ChooseColumn(game);
+        sw.Stop();
+
+        sw.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(1));
+    }
 }
