@@ -4,7 +4,7 @@ root = true
 indent_style = space
 indent_size = 4
 charset = utf-8
-end_of_line = crlf
+end_of_line = lf
 trim_trailing_whitespace = true
 insert_final_newline = true
 
@@ -17,3 +17,6 @@ csharp_style_var_when_type_is_apparent = true:suggestion
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:warning
 dotnet_diagnostic.IDE0005.severity = warning
+
+[*.{ps1,bat,cmd}]
+end_of_line = crlf
