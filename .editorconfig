@@ -20,3 +20,6 @@ dotnet_diagnostic.IDE0005.severity = warning
 
 [*.{ps1,bat,cmd}]
 end_of_line = crlf
+
+[*.md]
+trim_trailing_whitespace = false
