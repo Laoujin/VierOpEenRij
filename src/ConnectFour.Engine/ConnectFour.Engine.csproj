@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>ConnectFour.Engine</RootNamespace>
+    <AssemblyName>ConnectFour.Engine</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- XML doc comments are not required for this library -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="ConnectFour.Engine.Tests" />
+  </ItemGroup>
+</Project>

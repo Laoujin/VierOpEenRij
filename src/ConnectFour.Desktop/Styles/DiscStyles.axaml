@@ -1,0 +1,33 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Ellipse.disc">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.30" Easing="QuadraticEaseIn" />
+            </Transitions>
+        </Setter>
+        <Setter Property="RenderTransform" Value="translate(0px, 0px)" />
+    </Style>
+
+    <Style Selector="Ellipse.disc.dropping">
+        <Setter Property="RenderTransform" Value="translate(0px, -200px)" />
+    </Style>
+
+    <Style Selector="Border.winning">
+        <Style.Animations>
+            <Animation Duration="0:0:1.0" IterationCount="INFINITE" PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BoxShadow" Value="0 0 8 1 #FFD93D" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BoxShadow" Value="0 0 22 4 #FFD93D" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <Style Selector="Ellipse.preview">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+</Styles>

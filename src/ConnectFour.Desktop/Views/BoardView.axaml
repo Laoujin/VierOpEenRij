@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ConnectFour.Desktop.ViewModels"
+             xmlns:conv="using:ConnectFour.Desktop.Converters"
+             x:Class="ConnectFour.Desktop.Views.BoardView"
+             x:DataType="vm:GameViewModel"
+             x:Name="Root">
+    <UserControl.Resources>
+        <conv:CellStateToBrushConverter x:Key="CellBrush" />
+    </UserControl.Resources>
+
+    <Border Background="#181B22" CornerRadius="12" Padding="12">
+        <Grid>
+            <ItemsControl ItemsSource="{Binding Cells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="7" Rows="6" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:CellViewModel">
+                        <Border Margin="4" CornerRadius="100" Background="#0F1115"
+                                BorderThickness="2"
+                                Classes.winning="{Binding IsWinningCell}"
+                                BorderBrush="{Binding IsWinningCell,
+                                    Converter={x:Static conv:WinningCellBrushConverter.Instance}}">
+                            <Grid>
+                                <Ellipse Margin="6" Classes="disc"
+                                         Classes.dropping="{Binding IsDropping}"
+                                         Fill="{Binding State, Converter={StaticResource CellBrush}}" />
+                                <Ellipse Margin="6" Classes="preview"
+                                         IsVisible="{Binding IsLandingPreview}"
+                                         Fill="{Binding PreviewBrush}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Column-click overlay: binds to the UserControl's DataContext (GameViewModel) by name -->
+            <ItemsControl ItemsSource="{Binding #Root.DataContext.ColumnHandles}"
+                          IsHitTestVisible="True">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="7" Rows="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Command="{Binding #Root.DataContext.PlayColumnCommand}"
+                                CommandParameter="{Binding}"
+                                PointerEntered="OnColumnPointerEntered"
+                                PointerExited="OnColumnPointerExited" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

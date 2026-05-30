@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ConnectFour.Desktop.ViewModels"
+        xmlns:views="using:ConnectFour.Desktop.Views"
+        xmlns:models="using:ConnectFour.Desktop.Models"
+        x:Class="ConnectFour.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Connect Four"
+        Width="720" Height="780"
+        MinWidth="520" MinHeight="600"
+        Background="#0F1115">
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto" Margin="16,12">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding Game.StatusText}"
+                       FontSize="18"
+                       VerticalAlignment="Center"
+                       Foreground="#E6E8EE" />
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Modes}"
+                      SelectedItem="{Binding SelectedMode, Mode=TwoWay}"
+                      Margin="0,0,12,0"
+                      MinWidth="140" />
+            <Button Grid.Column="2"
+                    Content="New Game"
+                    Command="{Binding Game.NewGameCommand}" />
+        </Grid>
+        <views:BoardView DataContext="{Binding Game}" Margin="16,0,16,16" />
+    </DockPanel>
+</Window>
