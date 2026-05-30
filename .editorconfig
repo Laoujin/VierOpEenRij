@@ -17,3 +17,6 @@ csharp_style_var_when_type_is_apparent = true:suggestion
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:warning
 dotnet_diagnostic.IDE0005.severity = warning
+
+[*.md]
+trim_trailing_whitespace = false
